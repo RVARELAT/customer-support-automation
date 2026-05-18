@@ -11,10 +11,17 @@ from pydantic import BaseModel
 from backend.automation import process_ticket
 
 
+from backend.database import engine
+from backend.models import Ticket
+from backend.database import Base
+
+
 # Create the FastAPI application
 # Think of this as creating the backend server
 app = FastAPI()
 
+# Create database tables automatically
+Base.metadata.create_all(bind=engine)
 
 # Create a data model for incoming support tickets
 # This defines what data the API expects
