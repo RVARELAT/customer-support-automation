@@ -15,6 +15,8 @@ from backend.database import engine
 from backend.models import Ticket
 from backend.database import Base
 
+from backend.database import SessionLocal
+
 
 # Create the FastAPI application
 # Think of this as creating the backend server
@@ -55,8 +57,57 @@ def home():
 # This function runs when someone sends a ticket
 def process_support_ticket(ticket: TicketRequest):
 
-    # Process the ticket using our automation logic
+    # Run automation workflow
     result = process_ticket(ticket.ticket_text)
 
-    # Return the processed result
+    # Create database session
+    # This allows us to communicate with the database
+    db = SessionLocal()
+
+    # Create Ticket object for database
+    new_ticket = Ticket(
+
+        # Save original ticket text
+        ticket_text=result["ticket_text"],
+
+        # Save detected category
+        category=result["category"],
+
+        # Save assigned priority
+        priority=result["priority"],
+
+        # Save suggested action
+        suggested_action=result["suggested_action"],
+
+        # Save ticket status
+        status=result["status"]
+    )
+
+    # Add ticket to database session
+    db.add(new_ticket)
+
+    # Commit/save changes permanently
+    db.commit()
+
+    # Close database session
+    db.close()
+
+    # Return processed ticket result
     return result
+
+
+# Create a GET endpoint to view all saved tickets
+# GET means we are retrieving data from the server
+@app.get("/tickets")
+def get_all_tickets():
+    # Open a database session
+    db = SessionLocal()
+
+    # Get all tickets from the Ticket table
+    tickets = db.query(Ticket).all()
+
+    # Close the database session
+    db.close()
+
+    # Return all saved tickets
+    return tickets
