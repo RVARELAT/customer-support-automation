@@ -19,9 +19,53 @@ API_URL = "http://127.0.0.1:8000"
 # Dashboard title
 st.title("Customer Support Automation Dashboard")
 
-
 # Small description under the title
 st.write("Monitor processed support tickets and automation results.")
+
+
+# Ticket submission section
+st.subheader("Submit New Support Ticket")
+
+# Text area where user can type a support ticket
+ticket_text = st.text_area(
+    "Enter customer support ticket:",
+    placeholder="Example: My internet has been down for 3 days and I want a refund."
+)
+
+# Button to submit the ticket
+if st.button("Process Ticket"):
+
+    # Make sure the user typed something
+    if ticket_text.strip():
+
+        # Send the ticket to the FastAPI backend
+        response = requests.post(
+            f"{API_URL}/process-ticket",
+            json={"ticket_text": ticket_text}
+        )
+
+        # If the request worked, show success message
+        if response.status_code == 200:
+            result = response.json()
+
+            st.success("Ticket processed successfully!")
+
+            st.write("Category:", result["category"])
+            st.write("Priority:", result["priority"])
+            st.write("Suggested Action:", result["suggested_action"])
+            st.write("Status:", result["status"])
+
+        # If something went wrong, show error
+        else:
+            st.error("Something went wrong while processing the ticket.")
+
+    # If text box is empty, warn the user
+    else:
+        st.warning("Please enter a ticket before submitting.")
+
+
+# Divider line
+st.divider()
 
 
 # Call the FastAPI /tickets endpoint
