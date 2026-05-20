@@ -4,3 +4,5 @@ streamlit
 pandas
 python-dotenv
 sqlalchemy
+requests
+
