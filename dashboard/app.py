@@ -99,9 +99,47 @@ if response.status_code == 200:
         col3.metric("Automated", automated)
         col4.metric("Needs Review", needs_review)
 
-        # Show all tickets in a table
+        # # Show all tickets in a table
+        # st.subheader("Saved Tickets")
+        # st.dataframe(df)
+        
+        # Show filters for saved tickets
+        st.subheader("Filter Tickets")
+
+        # Create 3 filter dropdowns
+        category_filter = st.selectbox(
+            "Filter by category",
+            ["All"] + sorted(df["category"].unique().tolist())
+        )
+
+        priority_filter = st.selectbox(
+            "Filter by priority",
+            ["All"] + sorted(df["priority"].unique().tolist())
+        )
+
+        status_filter = st.selectbox(
+            "Filter by status",
+            ["All"] + sorted(df["status"].unique().tolist())
+        )
+
+        # Start with all tickets
+        filtered_df = df.copy()
+
+        # Apply category filter if user selected a category
+        if category_filter != "All":
+            filtered_df = filtered_df[filtered_df["category"] == category_filter]
+
+        # Apply priority filter if user selected a priority
+        if priority_filter != "All":
+            filtered_df = filtered_df[filtered_df["priority"] == priority_filter]
+
+        # Apply status filter if user selected a status
+        if status_filter != "All":
+            filtered_df = filtered_df[filtered_df["status"] == status_filter]
+
+        # Show filtered tickets
         st.subheader("Saved Tickets")
-        st.dataframe(df)
+        st.dataframe(filtered_df)
 
     else:
         st.info("No tickets found yet. Process a ticket first.")
