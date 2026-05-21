@@ -17,6 +17,9 @@ from backend.database import Base
 
 from backend.database import SessionLocal
 
+from backend.logger import log_failure
+
+
 
 # Create the FastAPI application
 # Think of this as creating the backend server
@@ -50,50 +53,101 @@ def home():
     }
 
 
+
+# # Create a POST endpoint
+# # POST means we are sending data to the server
+# @app.post("/process-ticket")
+
+# # This function runs when someone sends a ticket
+# def process_support_ticket(ticket: TicketRequest):
+
+#     # Run automation workflow
+#     result = process_ticket(ticket.ticket_text)
+
+#     # Create database session
+#     # This allows us to communicate with the database
+#     db = SessionLocal()
+
+#     # Create Ticket object for database
+#     new_ticket = Ticket(
+
+#         # Save original ticket text
+#         ticket_text=result["ticket_text"],
+
+#         # Save detected category
+#         category=result["category"],
+
+#         # Save assigned priority
+#         priority=result["priority"],
+
+#         # Save suggested action
+#         suggested_action=result["suggested_action"],
+
+#         # Save ticket status
+#         status=result["status"]
+#     )
+
+#     # Add ticket to database session
+#     db.add(new_ticket)
+
+#     # Commit/save changes permanently
+#     db.commit()
+
+#     # Close database session
+#     db.close()
+
+#     # Return processed ticket result
+#     return result
+
+
 # Create a POST endpoint
 # POST means we are sending data to the server
 @app.post("/process-ticket")
-
-# This function runs when someone sends a ticket
 def process_support_ticket(ticket: TicketRequest):
 
-    # Run automation workflow
-    result = process_ticket(ticket.ticket_text)
+    # Try to process and save the ticket
+    try:
 
-    # Create database session
-    # This allows us to communicate with the database
-    db = SessionLocal()
+        # Run the automation workflow from automation.py
+        result = process_ticket(ticket.ticket_text)
 
-    # Create Ticket object for database
-    new_ticket = Ticket(
+        # Open a database session
+        db = SessionLocal()
 
-        # Save original ticket text
-        ticket_text=result["ticket_text"],
+        # Create a new Ticket row using the automation result
+        new_ticket = Ticket(
+            ticket_text=result["ticket_text"],
+            category=result["category"],
+            priority=result["priority"],
+            suggested_action=result["suggested_action"],
+            status=result["status"]
+        )
 
-        # Save detected category
-        category=result["category"],
+        # Stage the new ticket to be saved
+        db.add(new_ticket)
 
-        # Save assigned priority
-        priority=result["priority"],
+        # Permanently save it to the database
+        db.commit()
 
-        # Save suggested action
-        suggested_action=result["suggested_action"],
+        # Close the database session
+        db.close()
 
-        # Save ticket status
-        status=result["status"]
-    )
+        # Return the automation result back to the user/API
+        return result
 
-    # Add ticket to database session
-    db.add(new_ticket)
+    # If anything goes wrong, this block runs
+    except Exception as error:
 
-    # Commit/save changes permanently
-    db.commit()
+        # Save the failure details to the log file
+        log_failure(ticket.ticket_text, str(error))
 
-    # Close database session
-    db.close()
+        # Return an error response
+        return {
+            "status": "failed",
+            "ticket_text": ticket.ticket_text,
+            "error": str(error)
+        }
 
-    # Return processed ticket result
-    return result
 
 
 # Create a GET endpoint to view all saved tickets
