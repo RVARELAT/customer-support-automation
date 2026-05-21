@@ -154,10 +154,12 @@ if response.status_code == 200:
         # Apply status filter if user selected a status
         if status_filter != "All":
             filtered_df = filtered_df[filtered_df["status"] == status_filter]
-
+        
+        
         # Show filtered tickets
         st.subheader("Saved Tickets")
         st.dataframe(filtered_df)
+        
 
     else:
         st.info("No tickets found yet. Process a ticket first.")
