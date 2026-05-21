@@ -121,9 +121,27 @@ if response.status_code == 200:
             "Filter by status",
             ["All"] + sorted(df["status"].unique().tolist())
         )
+        
+        # Search box for tickets
+        search_text = st.text_input(
+            "Search tickets",
+            placeholder="Search by refund, outage, billing, high, automated..."
+        )
 
         # Start with all tickets
         filtered_df = df.copy()
+        
+        # Apply search filter if user typed something
+        if search_text.strip():
+            search_lower = search_text.lower()
+
+            filtered_df = filtered_df[
+                filtered_df["ticket_text"].str.lower().str.contains(search_lower)
+                | filtered_df["category"].str.lower().str.contains(search_lower)
+                | filtered_df["priority"].str.lower().str.contains(search_lower)
+                | filtered_df["status"].str.lower().str.contains(search_lower)
+                | filtered_df["suggested_action"].str.lower().str.contains(search_lower)
+            ]
 
         # Apply category filter if user selected a category
         if category_filter != "All":
