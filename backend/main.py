@@ -19,7 +19,7 @@ from backend.database import SessionLocal
 
 from backend.logger import log_failure
 
-
+from agent.agent import run_operations_agent
 
 # Create the FastAPI application
 # Think of this as creating the backend server
@@ -118,3 +118,15 @@ def get_all_tickets():
 
     # Return all saved tickets
     return tickets
+
+
+# Create a GET endpoint for the AI operations agent
+# This lets us run the agent from the API
+@app.get("/agent/summary")
+def get_agent_summary():
+
+    # Run the operations agent
+    result = run_operations_agent()
+
+    # Return the agent's summary
+    return result
