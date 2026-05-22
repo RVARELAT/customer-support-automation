@@ -5,4 +5,4 @@ pandas
 python-dotenv
 sqlalchemy
 requests
-
+openai
