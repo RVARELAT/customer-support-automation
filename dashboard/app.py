@@ -22,6 +22,38 @@ st.title("Customer Support Automation Dashboard")
 # Small description under the title
 st.write("Monitor processed support tickets and automation results.")
 
+# Agent summary section
+st.subheader("AI Operations Agent")
+
+# Button to run the operations agent
+if st.button("Generate Operations Summary"):
+
+    # Call the FastAPI agent endpoint
+    agent_response = requests.get(f"{API_URL}/agent/summary")
+
+    # Check if request worked
+    if agent_response.status_code == 200:
+
+        # Convert JSON response into Python data
+        agent_result = agent_response.json()
+
+        # Show summary message
+        st.success(agent_result["summary"])
+
+        # Show metrics
+        st.write("Metrics:")
+        st.json(agent_result["metrics"])
+
+        # Show high priority tickets
+        st.write("High Priority Tickets:")
+        st.json(agent_result["high_priority_tickets"])
+
+        # Show recommendation
+        st.write("Recommendation:")
+        st.write(agent_result["recommendation"])
+
+    else:
+        st.error("Could not run the operations agent.")
 
 # Ticket submission section
 st.subheader("Submit New Support Ticket")

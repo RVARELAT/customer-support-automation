@@ -129,4 +129,4 @@ def get_agent_summary():
     result = run_operations_agent()
 
     # Return the agent's summary
-    return result
+    return result 
