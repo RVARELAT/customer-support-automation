@@ -54,7 +54,6 @@ API endpoints include:
 | `POST /process-ticket` | Process and store support tickets |
 | `GET /tickets` | Retrieve saved tickets |
 | `GET /agent/summary` | Run the AI operations agent |
-| `GET /health` | Backend health monitoring |
 
 The backend acts as the operational system the AI agent interacts with.
 
