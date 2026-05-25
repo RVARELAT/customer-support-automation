@@ -1,26 +1,39 @@
-# Customer Support Automation System
+# OpsPilot AI
+### AI-Powered Support Operations Platform
 
-An internal operations tool that automates customer support ticket processing using Python, FastAPI, SQLite, and Streamlit.
+OpsPilot AI is an AI-driven operations platform that combines backend automation workflows with an agentic AI layer capable of analyzing support operations, monitoring ticket activity, identifying urgent issues, and generating operational summaries using backend tools and APIs.
 
-This project simulates a real-world customer support automation workflow by:
-- classifying support tickets
-- assigning priority levels
-- recommending actions
-- storing ticket data
-- monitoring automation results
-- logging failures
-- displaying operational metrics in a dashboard
+This project simulates how modern enterprise AI systems interact with operational software rather than functioning as simple chatbots.
 
 ---
 
-# Features
+# Key Features
 
-## Ticket Automation
-- Detects support ticket categories
-- Assigns urgency levels
-- Suggests support actions automatically
+## AI Operations Agent
+The platform includes a mock AI operations agent capable of:
 
-Supported categories:
+- analyzing support ticket data
+- identifying urgent operational issues
+- generating operational summaries
+- monitoring ticket metrics
+- recommending actions
+- detecting repeated support problems
+
+The AI agent uses backend tools and APIs to retrieve and analyze operational data.
+
+---
+
+## Support Ticket Automation
+
+Automatically processes support tickets by:
+
+- classifying issue categories
+- assigning priority levels
+- recommending support actions
+- flagging tickets for review
+
+Supported ticket categories:
+
 - billing
 - refund
 - outage
@@ -30,62 +43,82 @@ Supported categories:
 
 ---
 
-## Backend API
+## FastAPI Backend
+
 Built using FastAPI.
 
-Endpoints:
-- `POST /process-ticket`
-- `GET /tickets`
+API endpoints include:
 
-The backend:
-- processes tickets
-- stores ticket data
-- retrieves saved tickets
-- handles automation failures
+| Endpoint | Purpose |
+|---|---|
+| `POST /process-ticket` | Process and store support tickets |
+| `GET /tickets` | Retrieve saved tickets |
+| `GET /agent/summary` | Run the AI operations agent |
+| `GET /health` | Backend health monitoring |
 
----
-
-## Database Integration
-Uses SQLite + SQLAlchemy for persistent storage.
-
-Stored ticket data includes:
-- ticket text
-- category
-- priority
-- suggested action
-- automation status
+The backend acts as the operational system the AI agent interacts with.
 
 ---
 
-## Interactive Dashboard
-Built with Streamlit.
+## AI Tool Architecture
 
-Dashboard features:
+The AI agent does not directly access the database.
+
+Instead, it uses tools:
+
+```text
+AI Agent
+    ↓
+Tool Functions
+    ↓
+FastAPI APIs
+    ↓
+SQLite Database
+```
+
+This mirrors modern enterprise AI system design where agents interact with operational software through controlled tool interfaces.
+
+---
+
+# Interactive Dashboard
+
+Built using Streamlit.
+
+Dashboard capabilities:
+
 - submit support tickets
-- view saved tickets
-- filter tickets
-- monitor automation metrics
+- monitor operational metrics
+- search/filter tickets
+- run the AI operations agent
+- display AI-generated operational summaries
+- view urgent ticket activity
 
 ---
 
-## Failure Logging
-Automation failures are logged into:
+# Failure Logging & Monitoring
+
+Automation failures are logged automatically into:
 
 ```text
 automation_failures.log
 ```
 
-This simulates real-world monitoring and reliability workflows.
+This simulates real-world operational monitoring and reliability workflows.
 
 ---
 
 # Tech Stack
 
-## Backend
+## Backend & APIs
 - Python
 - FastAPI
 - SQLAlchemy
 - SQLite
+
+## AI / Agent Layer
+- Python
+- Tool-based agent architecture
+- Operational reasoning workflows
 
 ## Frontend / Dashboard
 - Streamlit
@@ -105,9 +138,13 @@ This simulates real-world monitoring and reliability workflows.
 ```text
 Streamlit Dashboard
         ↓
-FastAPI Backend API
+FastAPI Backend APIs
         ↓
-Automation Workflow
+AI Operations Agent
+        ↓
+Tool Functions
+        ↓
+Operational Ticket System
         ↓
 SQLite Database
         ↓
@@ -128,141 +165,104 @@ customer-support-automation/
 │   └── logger.py
 ├── dashboard/
 │   └── app.py
+├── agent/
+│   └── agent.py
+├── tools/
+│   └── ticket_tools.py
 ├── requirements.txt
 ├── support_tickets.db
+├── automation_failures.log
 └── README.md
 ```
 
 ---
 
-# How To Run The Project
+# Example AI Workflow
 
-## 1. Clone Repository
-
-```bash
-git clone <YOUR_GITHUB_REPO_URL>
-cd customer-support-automation
-```
-
----
-
-## 2. Create Virtual Environment
-
-```bash
-python -m venv .venv
-```
-
-Activate environment:
-
-### Mac/Linux
-
-```bash
-source .venv/bin/activate
-```
-
-### Windows
-
-```bash
-.venv\Scripts\activate
-```
-
----
-
-## 3. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## 4. Run FastAPI Backend
-
-```bash
-uvicorn backend.main:app --reload
-```
-
-Backend URL:
+## User Action
 
 ```text
-http://127.0.0.1:8000
+Generate Operations Summary
 ```
 
-Swagger API Docs:
+## AI Agent Workflow
 
 ```text
-http://127.0.0.1:8000/docs
+1. Call backend ticket tools
+2. Retrieve support ticket data
+3. Analyze ticket metrics
+4. Detect urgent operational issues
+5. Generate operational summary
+6. Recommend actions
 ```
 
 ---
 
-## 5. Run Streamlit Dashboard
-
-Open another terminal:
-
-```bash
-streamlit run dashboard/app.py
-```
-
----
-
-# Example Workflow
-
-1. User submits support ticket
-2. Backend processes ticket
-3. Automation assigns category + priority
-4. Ticket saved into SQLite database
-5. Dashboard displays updated metrics
-6. Failures are logged automatically
-
----
-
-# Example Ticket
-
-Input:
+# Example AI Operations Report
 
 ```text
-"My internet has been down for 3 days and I want a refund."
-```
+Operations Summary:
+There are 15 total support tickets. 4 are high priority and 3 require manual review.
 
-Output:
+Biggest Issue:
+The most common ticket category is 'outage'.
 
-```json
-{
-  "category": "refund",
-  "priority": "high",
-  "suggested_action": "Check refund eligibility and order history. Mark for urgent review.",
-  "status": "needs_review"
-}
+Main Concern:
+There are multiple urgent tickets requiring immediate attention.
+
+Recommended Actions:
+Review high priority tickets first and investigate repeated outage-related issues.
 ```
 
 ---
 
 # Engineering Concepts Practiced
 
+This project demonstrates:
+
 - backend API development
 - database integration
 - CRUD operations
 - automation workflows
-- failure handling
-- logging and monitoring
+- AI agent orchestration
+- tool-based AI systems
+- operational monitoring
+- failure logging
 - dashboard development
 - Git/GitHub workflow
 - virtual environments
 - dependency management
+- system architecture design
+
+---
+
+# Why This Project Matters
+
+This project focuses on operational AI systems rather than generic chatbots.
+
+The AI agent interacts with backend systems, APIs, and operational data to simulate real-world enterprise AI workflows used in:
+
+- internal tooling
+- customer operations
+- platform engineering
+- operational automation
+- AI operations systems
 
 ---
 
 # Future Improvements
 
-Possible future features:
-- AI-powered ticket classification
-- OpenAI-generated responses
-- authentication/login system
+Potential future upgrades:
+
+- real OpenAI API integration
+- automated incident reports
+- Slack/email alerts
+- multi-agent workflows
 - PostgreSQL migration
 - Docker deployment
-- Slack/email alerts
-- analytics dashboard
+- ticket trend analysis
+- scheduled monitoring agents
+- AI-generated customer responses
 
 ---
 
