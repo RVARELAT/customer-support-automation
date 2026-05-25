@@ -48,9 +48,9 @@ if st.button("Generate Operations Summary"):
         st.write("High Priority Tickets:")
         st.json(agent_result["high_priority_tickets"])
 
-        # Show recommendation
-        st.write("Recommendation:")
-        st.write(agent_result["recommendation"])
+        # Show AI-generated report
+        st.write("AI Operations Report:")
+        st.write(agent_result["ai_report"])
 
     else:
         st.error("Could not run the operations agent.")
